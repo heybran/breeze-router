@@ -1,0 +1,18 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite"
+  },
+  "keywords": [],
+  "author": "Brandon Zhang",
+  "license": "ISC",
+  "dependencies": {
+    "@heybran/breeze-spa-router": "file:~/codes/breeze-router/",
+    "breeze-spa-router": "file:~/codes/breeze-router/",
+    "vite": "^4.3.8"
+  }
+}
