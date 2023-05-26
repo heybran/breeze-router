@@ -1,3 +1,16 @@
+// @ts-check
+import {
+  isFunction,
+  isAsyncFunction,
+  removeTrailingSlash,  
+} from "./core/utils.js";
+
+import {
+  Route,
+  RouteParams,
+  MatchedRoute,
+} from "./types.js";
+
 /**
  * Class representing a router.
  */
@@ -9,14 +22,14 @@ export default class BreezeRouter {
   constructor() {
     /**
      * Object containing all registered routes.
-     * @type {Object.TODO} 
+     * @type {Route}
      * @private
      */
     this._routes = {};
 
     /**
      * The previous route that was navigated to
-     * @type {Object|null}
+     * @type {Route|null}
      * @private
      */
     this._previousRoute = null;
@@ -45,11 +58,15 @@ export default class BreezeRouter {
    * Adds a new route to the router.
    * @param {string} route - The route path to add.
    * @param {Function} handler - The async function to handle the route
-   * @returns {BreezeRouter} The BreezeRouter instance.
+   * @returns {BreezeRouter|void} The BreezeRouter instance.
    */
   add(route, handler) {
     if (this._routes[route]) {
       return console.warn(`Route already exists: ${route}`);
+    }
+
+    if (typeof handler !== 'function') {
+      return console.error(`handler on route '${route}' is not a function.`);
     }
 
     this._routes[route] = {
@@ -78,38 +95,34 @@ export default class BreezeRouter {
       return;
     }
 
-    if (typeof route.handler === "function" && route.handler.constructor.name.toLowerCase() === "function") {
-      route.handler({ route, param });
+    if (isFunction(route.handler)) {
+      route.handler({ route, params });
     } 
 
-    if (typeof route.handler === "function" && route.handler.constructor.name.toLowerCase() === "asyncfunction") {
+    if (isAsyncFunction(route.handler)) {
       await route.handler({ route, params });
     }
   }
 
-  // @param {string} url
+  /**
+   *
+   * @param {string} url - Current url users visite or nagivate to.
+   * @returns {MatchedRoute}
+   */
   _matchUrlToRoute(url) {
-    // params will be storing some information of matched route
+    /** @type {RouteParams} */
     const params = {};
 
-    // If url ends with "/", e.g. "/project/edit/123/",
-    // then remove the trailing slash using replace() method with a regular expression.
-    if (url.endsWith('/')) {
-      url = url.replace(/\/$/, '');
-    }
+    url = removeTrailingSlash(url);
 
-    // When we visit url: /project/edit/123,
-    // first we need to figure out which route match the url pattern.
     const matchedRoute = Object.keys(this._routes).find((route) => {
-      // '/dashboard' will not match '/project/edit/123'
-      // as they have different length if we compare them after split with "/".
+      route = removeTrailingSlash(route);
+
       if (url.split('/').length !== route.split('/').length) {
         return false;
       }
 
-      // '/project/edit/:id' => [ "project", "edit", ":id" ]
       let routeSegments = route.split('/').slice(1);
-      // '/project/edit/123' => [ "project", "edit", "123" ]
       let urlSegments = url.split('/').slice(1);
 
       // If each segment in the url matches the corresponding segment in the route path,
@@ -118,19 +131,24 @@ export default class BreezeRouter {
         return segment === urlSegments[i] || segment.startsWith(':');
       });
 
-      // If the route matches the URL, pull out any params from the URL.
-      if (match) {
-        routeSegments.forEach((segment, i) => {
-          if (segment[0] === ':') {
-            const propName = segment.slice(1);
-            params[propName] = decodeURIComponent(urlSegments[i]);
-          }
-        });
+      if (!match) {
+        return false;
       }
 
-      return match;
+      // If the route matches the URL, pull out any params from the URL.
+      routeSegments.forEach((segment, i) => {
+        if (segment.startsWith(':')) {
+          const propName = segment.slice(1);
+          params[propName] = decodeURIComponent(urlSegments[i]);
+        }
+      });
+
+      return true;
     });
 
     return { route: this._routes[matchedRoute], params };
+  }
+
+  _handleClick(event) {
   }
 } 
