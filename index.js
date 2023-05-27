@@ -1,2 +1,2 @@
-import BreezeRouter from "./dist/BreezeRouter.min.js";
+import BreezeRouter from "./dist/BreezeRouter.js";
 export default BreezeRouter;

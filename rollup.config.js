@@ -1,4 +1,5 @@
 import terser from '@rollup/plugin-terser';
+import copy from 'rollup-plugin-copy';
 
 export default {
  input: 'src/index.js',
@@ -16,5 +17,12 @@ export default {
      plugins: [terser()],
      sourcemap: true,
    },
- ],
+  ],
+  plugins: [
+    copy({
+      targets: [
+        { src: 'src/types.js', dest: 'dist'}
+      ]
+    })
+  ]
 };
