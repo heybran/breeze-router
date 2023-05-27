@@ -15,8 +15,7 @@
  */
 
 export {
-  Route,
-  RouteParams,
-  MatchedRoute,
+ Route,
+ RouteParams,
+ MatchedRoute
 }
-

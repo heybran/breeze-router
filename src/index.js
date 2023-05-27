@@ -5,12 +5,6 @@ import {
   removeTrailingSlash,  
 } from "./core/utils.js";
 
-import {
-  Route,
-  RouteParams,
-  MatchedRoute,
-} from "./types.js";
-
 /**
  * Class representing a router.
  */
@@ -22,17 +16,17 @@ export default class BreezeRouter {
   constructor() {
     /**
      * Object containing all registered routes.
-     * @type {Route}
+     * @type {import('./types.js').Route}
      * @private
      */
     this._routes = {};
 
     /**
      * The previous route that was navigated to
-     * @type {Route|null}
+     * @type {import('./types.js').Route}
      * @private
      */
-    this._previousRoute = null;
+    this._previousRoute = {};
 
     /**
      * Flag indicating whether this is the first initial page load.
@@ -61,6 +55,11 @@ export default class BreezeRouter {
    * @returns {BreezeRouter|void} The BreezeRouter instance.
    */
   add(route, handler) {
+    route = route.trim();
+    if (route !== "/") {
+      route = removeTrailingSlash(route.trim());
+    }    
+
     if (this._routes[route]) {
       return console.warn(`Route already exists: ${route}`);
     }
@@ -107,17 +106,17 @@ export default class BreezeRouter {
   /**
    *
    * @param {string} url - Current url users visite or nagivate to.
-   * @returns {MatchedRoute}
+   * @returns {import('./types.js').MatchedRoute}
    */
   _matchUrlToRoute(url) {
-    /** @type {RouteParams} */
+    /** @type {import('./types.js').RouteParams} */
     const params = {};
 
-    url = removeTrailingSlash(url);
+    if (url !== '/') {
+      url = removeTrailingSlash(url);
+    }
 
     const matchedRoute = Object.keys(this._routes).find((route) => {
-      route = removeTrailingSlash(route);
-
       if (url.split('/').length !== route.split('/').length) {
         return false;
       }
