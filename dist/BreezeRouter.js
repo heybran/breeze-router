@@ -1,5 +1,28 @@
 // @ts-check
 
+const isFunction = (fn) => {
+  return fn.constructor.name.toLowerCase() === "function";
+};
+
+const isAsyncFunction = (fn) => {
+  return fn.constructor.name.toLowerCase() === "asyncfunction"; 
+};
+
+/**
+ * Remove trailing slash of a give url
+ * @param {string} url
+ * @returns {string}
+ */
+const removeTrailingSlash = (url) => {
+  if (url.endsWith('/')) {
+    url = url.replace(/\/$/, '');
+  }
+  
+  return url;
+};
+
+// @ts-check
+
 /**
  * Class representing a router.
  */
@@ -11,17 +34,17 @@ class BreezeRouter {
   constructor() {
     /**
      * Object containing all registered routes.
-     * @type {Object.<string, Function>} 
+     * @type {import('./types.js').Route}
      * @private
      */
     this._routes = {};
 
     /**
      * The previous route that was navigated to
-     * @type {Object|null}
+     * @type {import('./types.js').Route}
      * @private
      */
-    this._previousRoute = null;
+    this._previousRoute = {};
 
     /**
      * Flag indicating whether this is the first initial page load.
@@ -47,11 +70,20 @@ class BreezeRouter {
    * Adds a new route to the router.
    * @param {string} route - The route path to add.
    * @param {Function} handler - The async function to handle the route
-   * @returns {BreezeRouter} The BreezeRouter instance.
+   * @returns {BreezeRouter|void} The BreezeRouter instance.
    */
   add(route, handler) {
+    route = route.trim();
+    if (route !== "/") {
+      route = removeTrailingSlash(route.trim());
+    }    
+
     if (this._routes[route]) {
       return console.warn(`Route already exists: ${route}`);
+    }
+
+    if (typeof handler !== 'function') {
+      return console.error(`handler on route '${route}' is not a function.`);
     }
 
     this._routes[route] = {
@@ -80,38 +112,34 @@ class BreezeRouter {
       return;
     }
 
-    if (typeof route.handler === "function" && route.handler.constructor.name.toLowerCase() === "function") {
-      route.handler({ route, param });
+    if (isFunction(route.handler)) {
+      route.handler({ route, params });
     } 
 
-    if (typeof route.handler === "function" && route.handler.constructor.name.toLowerCase() === "asyncfunction") {
+    if (isAsyncFunction(route.handler)) {
       await route.handler({ route, params });
     }
   }
 
-  // @param {string} url
+  /**
+   *
+   * @param {string} url - Current url users visite or nagivate to.
+   * @returns {import('./types.js').MatchedRoute}
+   */
   _matchUrlToRoute(url) {
-    // params will be storing some information of matched route
+    /** @type {import('./types.js').RouteParams} */
     const params = {};
 
-    // If url ends with "/", e.g. "/project/edit/123/",
-    // then remove the trailing slash using replace() method with a regular expression.
-    if (url.endsWith('/')) {
-      url = url.replace(/\/$/, '');
+    if (url !== '/') {
+      url = removeTrailingSlash(url);
     }
 
-    // When we visit url: /project/edit/123,
-    // first we need to figure out which route match the url pattern.
     const matchedRoute = Object.keys(this._routes).find((route) => {
-      // '/dashboard' will not match '/project/edit/123'
-      // as they have different length if we compare them after split with "/".
       if (url.split('/').length !== route.split('/').length) {
         return false;
       }
 
-      // '/project/edit/:id' => [ "project", "edit", ":id" ]
       let routeSegments = route.split('/').slice(1);
-      // '/project/edit/123' => [ "project", "edit", "123" ]
       let urlSegments = url.split('/').slice(1);
 
       // If each segment in the url matches the corresponding segment in the route path,
@@ -120,24 +148,25 @@ class BreezeRouter {
         return segment === urlSegments[i] || segment.startsWith(':');
       });
 
-      // If the route matches the URL, pull out any params from the URL.
-      if (match) {
-        routeSegments.forEach((segment, i) => {
-          if (segment[0] === ':') {
-            const propName = segment.slice(1);
-            params[propName] = decodeURIComponent(urlSegments[i]);
-          }
-        });
+      if (!match) {
+        return false;
       }
 
-      return match;
+      // If the route matches the URL, pull out any params from the URL.
+      routeSegments.forEach((segment, i) => {
+        if (segment.startsWith(':')) {
+          const propName = segment.slice(1);
+          params[propName] = decodeURIComponent(urlSegments[i]);
+        }
+      });
+
+      return true;
     });
 
     return { route: this._routes[matchedRoute], params };
   }
 
-  _handleClick() {
-    
+  _handleClick(event) {
   }
 }
 
