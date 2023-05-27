@@ -1,12 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
-  '@heybran/breeze-spa-router':
-    specifier: file:~/codes/breeze-router/
-    version: file:..
   breeze-spa-router:
-    specifier: file:~/codes/breeze-router/
-    version: file:..
+    specifier: link:/Users/brandon/codes/breeze-spa-router/
+    version: link:..
   vite:
     specifier: ^4.3.8
     version: 4.3.8
@@ -311,10 +308,4 @@ packages:
       rollup: 3.23.0
     optionalDependencies:
       fsevents: 2.3.2
-    dev: false
-
-  file:..:
-    resolution: {directory: .., type: directory}
-    name: '@heybran/breeze-spa-router'
-    version: 1.0.0
     dev: false

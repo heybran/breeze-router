@@ -11,8 +11,7 @@
   "author": "Brandon Zhang",
   "license": "ISC",
   "dependencies": {
-    "@heybran/breeze-spa-router": "file:~/codes/breeze-router/",
-    "breeze-spa-router": "file:~/codes/breeze-router/",
+    "breeze-spa-router": "link:/Users/brandon/codes/breeze-spa-router/",
     "vite": "^4.3.8"
   }
 }
