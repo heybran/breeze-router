@@ -3,6 +3,8 @@ import {
   isFunction,
   isAsyncFunction,
   removeTrailingSlash,
+  findAnchor,
+  shouldRouterHandleClick,
 } from "./core/utils.js";
 
 /**
@@ -161,5 +163,27 @@ export default class BreezeRouter {
     }
   }
 
-  _handleClick(event) {}
+  /**
+   * Handles <a> link clicks
+   * @param {Event} event
+   * @returns {void}
+   */
+  _handleClick(event) {
+    const anchor = findAnchor(event);
+    if (!anchor) {
+      return;
+    }
+
+    if (!shouldRouterHandleClick(event, anchor)) {
+      return;
+    }
+
+    event.preventDefault();
+    let href = anchor.getAttribute("href").trim();
+    if (!href.startsWith("/")) {
+      href = "/" + href;
+    }
+
+    this.navigateTo(href);
+  }
 }
