@@ -1,12 +1,15 @@
 {
   "name": "breeze-spa-router",
   "version": "0.1.0",
-  "description": "A lightweight and flexible SPA router for vanilla JavaScript applications. It enables navigation within a single-page web application without requiring any external libraries or frameworks, making it easy to integrate with existing codebases and customize to meet specific needs. It is ideal for developers who want to build SPAs using vanilla JavaScript without being tied to a particular library or framework. It is well-suited for small to medium-sized applications that require custom routing logic and do not need the additional overhead of a full-featured framework.",
+  "description": "A lightweight, zero-dependency client-side router for single page applications (SPAs).",
   "main": "index.js",
   "type": "module",
+  "files": [
+    "index.js",
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "test:dev": "pnpm run -r dev",
+    "test:dev": "rollup -c & pnpm run -r dev",
     "dev": "vite",
     "build": "rollup -c",
     "prepare": "husky install"
