@@ -5,7 +5,7 @@ import {
   removeTrailingSlash,
   findAnchor,
   shouldRouterHandleClick,
-} from "./core/utils.js";
+} from "./utils.js";
 
 /**
  * Class representing a router.
