@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} Route
- * @property {string} [path] - The path of the route
- * @property {Function} [handler] - The handler function for the route.
+ * @property {string} path - The path of the route
+ * @property {Function} handler - The handler function for the route.
  */
 
 /**
@@ -14,8 +14,4 @@
  * @property {RouteParams} params
  */
 
-export {
- Route,
- RouteParams,
- MatchedRoute
-}
+export { Route, RouteParams, MatchedRoute };

@@ -2,7 +2,7 @@
 import {
   isFunction,
   isAsyncFunction,
-  removeTrailingSlash,  
+  removeTrailingSlash,
 } from "./core/utils.js";
 
 /**
@@ -28,16 +28,9 @@ export default class BreezeRouter {
      */
     this._previousRoute = {};
 
-    /**
-     * Flag indicating whether this is the first initial page load.
-     * @type {boolean}
-     * @private
-     */
-    this._isInitialLoad = false;
-
     // Bind event listeners
-    window.addEventListener('popstate', this._onChanged.bind(this));
-    document.body.addEventListener('click', this._handleClick.bind(this));
+    window.addEventListener("popstate", this._onChanged.bind(this));
+    document.body.addEventListener("click", this._handleClick.bind(this));
   }
 
   /**
@@ -58,19 +51,19 @@ export default class BreezeRouter {
     route = route.trim();
     if (route !== "/") {
       route = removeTrailingSlash(route.trim());
-    }    
+    }
 
     if (this._routes[route]) {
       return console.warn(`Route already exists: ${route}`);
     }
 
-    if (typeof handler !== 'function') {
+    if (typeof handler !== "function") {
       return console.error(`handler on route '${route}' is not a function.`);
     }
 
     this._routes[route] = {
       path: route,
-      handler
+      handler,
     };
 
     return this;
@@ -82,21 +75,37 @@ export default class BreezeRouter {
    * @returns {void}
    */
   navigateTo(url) {
-    window.history.pushState({url}, '', url);
+    window.history.pushState({ url }, "", url);
     this._onChanged();
+  }
+
+  /**
+   * Redirects a URL
+   * @param {string} url
+   * @returns {void}
+   */
+  redirect(url) {
+    this.navigateTo(url);
   }
 
   async _onChanged() {
     const path = window.location.pathname;
     const { route, params } = this._matchUrlToRoute(path);
 
-    if (!route) {
-      return;
-    }
+    // If no matching route found, route will be '404' route
+    // which has been handled by _matchUrlToRoute already
+    await this._handleRoute({ route, params });
+  }
 
+  /**
+   * Processes route callbacks registered by app
+   * @param {import('./types.js').MatchedRoute} options
+   * @returns {Promise<void>}
+   */
+  async _handleRoute({ route, params }) {
     if (isFunction(route.handler)) {
       route.handler({ route, params });
-    } 
+    }
 
     if (isAsyncFunction(route.handler)) {
       await route.handler({ route, params });
@@ -112,22 +121,22 @@ export default class BreezeRouter {
     /** @type {import('./types.js').RouteParams} */
     const params = {};
 
-    if (url !== '/') {
+    if (url !== "/") {
       url = removeTrailingSlash(url);
     }
 
     const matchedRoute = Object.keys(this._routes).find((route) => {
-      if (url.split('/').length !== route.split('/').length) {
+      if (url.split("/").length !== route.split("/").length) {
         return false;
       }
 
-      let routeSegments = route.split('/').slice(1);
-      let urlSegments = url.split('/').slice(1);
+      let routeSegments = route.split("/").slice(1);
+      let urlSegments = url.split("/").slice(1);
 
       // If each segment in the url matches the corresponding segment in the route path,
       // or the route path segment starts with a ':' then the route is matched.
       const match = routeSegments.every((segment, i) => {
-        return segment === urlSegments[i] || segment.startsWith(':');
+        return segment === urlSegments[i] || segment.startsWith(":");
       });
 
       if (!match) {
@@ -136,7 +145,7 @@ export default class BreezeRouter {
 
       // If the route matches the URL, pull out any params from the URL.
       routeSegments.forEach((segment, i) => {
-        if (segment.startsWith(':')) {
+        if (segment.startsWith(":")) {
           const propName = segment.slice(1);
           params[propName] = decodeURIComponent(urlSegments[i]);
         }
@@ -145,9 +154,12 @@ export default class BreezeRouter {
       return true;
     });
 
-    return { route: this._routes[matchedRoute], params };
+    if (matchedRoute) {
+      return { route: this._routes[matchedRoute], params };
+    } else {
+      return { route: this._routes[404], params };
+    }
   }
 
-  _handleClick(event) {
-  }
-} 
+  _handleClick(event) {}
+}
