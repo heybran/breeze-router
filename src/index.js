@@ -36,10 +36,10 @@ export default class BreezeRouter {
   }
 
   /**
-   * Initializes the router by triggering the initial navigation event.
+   * Starts the router.
    * @returns {void}
    */
-  init() {
+  start() {
     this._onChanged();
   }
 
