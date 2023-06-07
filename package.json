@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "test:dev": "pnpm run -r dev",
     "dev": "vite",
     "build": "rollup -c",
     "prepare": "husky install"
