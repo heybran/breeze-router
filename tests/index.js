@@ -57,5 +57,5 @@ ROUTER.add("404", async ({ route, params }) => {
   console.log(`${route.path} page rendered`);
 });
 
-ROUTER.init();
+ROUTER.start();
 window.ROUTER = ROUTER;
