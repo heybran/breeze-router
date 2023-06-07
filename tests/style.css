@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700");
+
+body {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  height: 100vh;
+  margin: 0;
+  font-family: "Montserrat";
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  background: #f1f1f1;
+  padding: 3.2rem 1rem;
+  gap: 1rem;
+}
+
+#root {
+  padding: 2rem;
+  max-width: min(75ch, 90%);
+  margin-inline: auto;
+}
+
+a {
+  text-decoration: none;
+  background: white;
+  border-radius: 10px;
+  padding: 0.5em 1em;
+  font-weight: bold;
+}
+
+.bilibili {
+  width: 2em;
+  height: 2em;
+  display: inline-block;
+  background-image: url("./images/bilibili.png");
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+}
+
+.text-indent {
+  text-indent: -9999em;
+}
