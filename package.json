@@ -1,5 +1,5 @@
 {
-  "name": "breeze-spa-router",
+  "name": "breeze-router",
   "version": "0.1.0",
   "description": "A lightweight, zero-dependency client-side router for single page applications (SPAs).",
   "main": "index.js",
