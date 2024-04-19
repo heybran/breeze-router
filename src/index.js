@@ -97,6 +97,11 @@ export default class BreezeRouter {
     // If no matching route found, route will be '404' route
     // which has been handled by _matchUrlToRoute already
     await this._handleRoute({ route, params });
+
+    /**
+     * Update previous route, so application route handler can check and decide if it should re-render whole page.
+     */
+    this._previousRoute = route;
   }
 
   /**
