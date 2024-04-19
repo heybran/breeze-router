@@ -43,6 +43,16 @@ ROUTER.add("/users/:username/posts/:postId", async ({ route, params }) => {
 ROUTER.start();
 ```
 
+## Util functions
+
+### `toggleParam(this, 1)`
+
+```html
+<input type="checkbox" name="freelance" onclick="window.ROUTER.toggleParam(this, 1)">
+```
+
+If checked, then it will append search params to url like this: `localhost/users?freelance=1`, if you click checkbox again, it will remove that search param from url.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
