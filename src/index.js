@@ -179,11 +179,35 @@ export default class BreezeRouter {
     }
 
     event.preventDefault();
-    let href = anchor.getAttribute("href").trim();
-    if (!href.startsWith("/")) {
+    let href = anchor.getAttribute("href")?.trim();
+    if (!href?.startsWith("/")) {
       href = "/" + href;
     }
 
     this.navigateTo(href);
+  }
+
+  /**
+   * Add or remove search param to current url.
+   * @param {HTMLInputElement} checkbox 
+   * @param {string} value
+   * @returns void
+   */
+  toggleParam(checkbox, value) {
+    const params = new URLSearchParams(location.search);
+    const name = checkbox.getAttribute('name')
+    if (!name) {
+      return console.warn(`name attribute is not set on ${checkbox.outerHTML}`);
+    }
+    if (checkbox.checked) {
+      !params.has(name) && params.set(name, value);
+    } else if (!checkbox.checked) {
+      params.has(name) && params.delete(name);
+    }
+    
+    const newUrl = !!params.size
+      ? `${location.pathname}?${params.toString()}`
+      : location.pathname;
+    this.navigateTo(newUrl);
   }
 }

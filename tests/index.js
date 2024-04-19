@@ -1,5 +1,5 @@
 // @ts-check
-import BreezeRouter from "breeze-spa-router";
+import BreezeRouter from "../src/index.js";
 
 const siteTitle = "A Fabulous Company";
 
