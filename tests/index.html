@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="description" />
-    <title>Vanilla JavsScript Routing | 原生JavaScript路由</title>
+    <title>Vanilla JavsScript Routing</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
@@ -14,8 +14,17 @@
       <a href="/about">About Us</a>
       <a href="/services">Our Services</a>
       <a href="/contact">Contact Us</a>
-      <input type="checkbox" onclick="window.ROUTER.toggleParam(this, 1)">
-      <input type="checkbox" name="four_day_week" onclick="window.ROUTER.toggleParam(this, 1)">
+      <a href="/ignore" data-breeze-ignore>Ignore link</a>
+      <input
+        type="checkbox"
+        name="freelance"
+        onclick="window.ROUTER.toggleParam(this, 1)"
+      />
+      <input
+        type="checkbox"
+        name="four_day_week"
+        onclick="window.ROUTER.toggleParam(this, 1)"
+      />
     </nav>
     <div id="root"></div>
 

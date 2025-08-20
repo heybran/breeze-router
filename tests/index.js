@@ -1,10 +1,11 @@
 // @ts-check
 import BreezeRouter from "../src/index.js";
 
-const siteTitle = "A Fabulous Company";
+// CDN.
+// import BreezeRouter from "https://unpkg.com/breeze-router@0.3.0/dist/BreezeRouter.min.js";
 
 const renderPage = async (path) => {
-  const html = `./pages/${path}.html`;
+  const html = `./pages/${path.replaceAll("/", "")}.html`;
   const response = await fetch(html);
   const data = await response.text();
   document.querySelector("#root").innerHTML = data;
