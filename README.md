@@ -1,7 +1,9 @@
 # Breeze Router
+
 A lightweight, zero-dependency client-side router for single page applications (SPAs).
 
 **Note: This project is not production ready and is still in development.**
+
 ## Installation
 
 To use this router in your project, install the router using npm:
@@ -15,21 +17,22 @@ npm install breeze-router
 To use the router in your application, you need to import `BreezeRouter` and define routes and handlers using the `Router` class:
 
 ```javascript
-import BeezeRouter from 'breeze-router';
+import BeezeRouter from "breeze-router";
 
 // Create a new `BreezeRouter` instance.
 const ROUTER = new BreezeRouter();
 
 // Define routes using the `add()` method.
-ROUTER.add('/', async () => {
+ROUTER.add("/", async () => {
   // Handle the root route
 });
 
-ROUTER.add('/about', async () => {
-  // Handle the about route
+ROUTER.add("/about", async ({ route, params }) => {
+  // Handle the about route.
+  // route.path equals to current route with a trailing splash, e.g.: /about/
 });
 
-ROUTER.add('/users/:userId', async ({ route, params }) => {
+ROUTER.add("/users/:userId", async ({ route, params }) => {
   // Handle the users route with a dynamic parameter :userId
   const userId = params.userId;
 });
@@ -48,7 +51,11 @@ ROUTER.start();
 ### `toggleParam(this, 1)`
 
 ```html
-<input type="checkbox" name="freelance" onclick="window.ROUTER.toggleParam(this, 1)">
+<input
+  type="checkbox"
+  name="freelance"
+  onclick="window.ROUTER.toggleParam(this, 1)"
+/>
 ```
 
 If checked, then it will append search params to url like this: `localhost/users?freelance=1`, if you click checkbox again, it will remove that search param from url.

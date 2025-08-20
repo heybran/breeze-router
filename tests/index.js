@@ -1,10 +1,8 @@
 // @ts-check
 import BreezeRouter from "../src/index.js";
 
-const siteTitle = "A Fabulous Company";
-
 const renderPage = async (path) => {
-  const html = `./pages/${path}.html`;
+  const html = `./pages/${path.replaceAll("/", "")}.html`;
   const response = await fetch(html);
   const data = await response.text();
   document.querySelector("#root").innerHTML = data;

@@ -6,6 +6,7 @@
  * @returns {boolean}
  */
 export const isFunction = (fn) => {
+  if (!fn) return false;
   return fn.constructor.name.toLowerCase() === "function";
 };
 
@@ -15,17 +16,32 @@ export const isFunction = (fn) => {
  * @returns {boolean}
  */
 export const isAsyncFunction = (fn) => {
+  if (!fn) return false;
   return fn.constructor.name.toLowerCase() === "asyncfunction";
 };
 
 /**
- * Remove trailing slash of a give url
+ * Remove trailing slash of a given url.
  * @param {string} url
  * @returns {string}
  */
 export const removeTrailingSlash = (url) => {
   if (url.endsWith("/")) {
     url = url.replace(/\/$/, "");
+  }
+
+  return url;
+};
+
+/**
+ * Add trailing slash of a given url.
+ * @param {string} url
+ * @returns {string}
+ */
+export const addTrailingSlash = (url) => {
+  url = url.trim();
+  if (!url.endsWith("/")) {
+    url = url + "/";
   }
 
   return url;

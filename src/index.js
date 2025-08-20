@@ -3,6 +3,7 @@ import {
   isFunction,
   isAsyncFunction,
   removeTrailingSlash,
+  addTrailingSlash,
   findAnchor,
   shouldRouterHandleClick,
 } from "./utils.js";
@@ -12,23 +13,37 @@ import {
  */
 export default class BreezeRouter {
   /**
+   * `data-` attribute to allow users to skip the router behavior,
+   * anchor link with this attribute set will behavior as normal link.
+   * @type {string}
+   */
+  #ignoreAttribute = "data-breeze-ignore";
+
+  /**
    * Creates a new BreezeRouter instance.
+   * @param {object} config - Config.
    * @constructor
    */
-  constructor() {
+  constructor(config) {
+    const { ignoreAttribute } = config || {};
+
+    if (ignoreAttribute) {
+      this.#ignoreAttribute = ignoreAttribute;
+    }
+
     /**
      * Object containing all registered routes.
-     * @type {import('./types.js').Route}
+     * @type {object}
      * @private
      */
     this._routes = {};
 
     /**
      * The previous route that was navigated to
-     * @type {import('./types.js').Route}
+     * @type {import('./types.js').Route|null}
      * @private
      */
-    this._previousRoute = {};
+    this._previousRoute = null;
 
     // Bind event listeners
     window.addEventListener("popstate", this._onChanged.bind(this));
@@ -52,7 +67,7 @@ export default class BreezeRouter {
   add(route, handler) {
     route = route.trim();
     if (route !== "/") {
-      route = removeTrailingSlash(route.trim());
+      route = addTrailingSlash(route);
     }
 
     if (this._routes[route]) {
@@ -60,7 +75,7 @@ export default class BreezeRouter {
     }
 
     if (typeof handler !== "function") {
-      return console.error(`handler on route '${route}' is not a function.`);
+      return console.error(`handler of route '${route}' must be a function.`);
     }
 
     this._routes[route] = {
@@ -110,11 +125,11 @@ export default class BreezeRouter {
    * @returns {Promise<void>}
    */
   async _handleRoute({ route, params }) {
-    if (isFunction(route.handler)) {
+    if (isFunction(route?.handler)) {
       route.handler({ route, params });
     }
 
-    if (isAsyncFunction(route.handler)) {
+    if (isAsyncFunction(route?.handler)) {
       await route.handler({ route, params });
     }
   }
@@ -129,7 +144,7 @@ export default class BreezeRouter {
     const params = {};
 
     if (url !== "/") {
-      url = removeTrailingSlash(url);
+      url = addTrailingSlash(url);
     }
 
     const matchedRoute = Object.keys(this._routes).find((route) => {
@@ -179,6 +194,14 @@ export default class BreezeRouter {
       return;
     }
 
+    /**
+     * Allow users to define an `data-` attribute to skip the route handling.
+     * Default to `data-breeze-ignore`.
+     */
+    if (anchor.hasAttribute(this.#ignoreAttribute)) {
+      return;
+    }
+
     if (!shouldRouterHandleClick(event, anchor)) {
       return;
     }
@@ -194,13 +217,13 @@ export default class BreezeRouter {
 
   /**
    * Add or remove search param to current url.
-   * @param {HTMLInputElement} checkbox 
+   * @param {HTMLInputElement} checkbox
    * @param {string} value
    * @returns void
    */
   toggleParam(checkbox, value) {
     const params = new URLSearchParams(location.search);
-    const name = checkbox.getAttribute('name')
+    const name = checkbox.getAttribute("name");
     if (!name) {
       return console.warn(`name attribute is not set on ${checkbox.outerHTML}`);
     }
@@ -209,7 +232,7 @@ export default class BreezeRouter {
     } else if (!checkbox.checked) {
       params.has(name) && params.delete(name);
     }
-    
+
     const newUrl = !!params.size
       ? `${location.pathname}?${params.toString()}`
       : location.pathname;
