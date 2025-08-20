@@ -8,8 +8,16 @@ A lightweight, zero-dependency client-side router for single page applications (
 
 To use this router in your project, install the router using npm:
 
+### 1. Through NPM
 ```bash
 npm install breeze-router
+```
+
+### 2. Through CDN link
+```javascript
+<script type="module">
+	import BreezeRouter from "https://unpkg.com/breeze-router@0.3.0/dist/BreezeRouter.min.js";
+</script>
 ```
 
 ## Usage
@@ -17,7 +25,11 @@ npm install breeze-router
 To use the router in your application, you need to import `BreezeRouter` and define routes and handlers using the `Router` class:
 
 ```javascript
+// NPM.
 import BeezeRouter from "breeze-router";
+
+// CDN.
+import BreezeRouter from "https://unpkg.com/breeze-router@0.3.0/dist/BreezeRouter.min.js";
 
 // Create a new `BreezeRouter` instance.
 const ROUTER = new BreezeRouter();
